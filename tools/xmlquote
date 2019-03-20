@@ -1,0 +1,9 @@
+#! /bin/sh
+# Quote special XML charaters.
+
+amp='s/\&/\&amp;/g'
+lt='s/</\&lt;/g'
+gt='s/>/\&gt;/g'
+quot='s/"/\&quot;/g'
+apos='s/'\''/\&apos;/g'
+exec sed "$amp;$lt;$gt;$quot;$apos" "$@"

@@ -1,0 +1,14 @@
+#! /bin/sh
+# Canonicalize source files.
+# Removes trailing spaces and tabs from each line,
+# as well as double blank lines.  It also unexpands
+# whitespace at the beginning of each line.
+
+for i
+do
+  if test -f "$i" -a -w "$i"
+  then
+    mv "$i" "$i".bak
+    unexpand "$i".bak | deblank -o "$i"
+  fi
+done

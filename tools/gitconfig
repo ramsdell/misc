@@ -1,0 +1,11 @@
+[user]
+	name = John D. Ramsdell
+	email = ramsdell@mitre.org
+[core]
+	pager = 
+	editor = vi
+[push]
+	default = simple
+[filter "deblank"]
+	clean = deblank
+	smudge = cat

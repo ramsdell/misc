@@ -1,0 +1,12 @@
+#! /bin/sh
+# Removes trailing spaces and tabs from each line,
+# as well as double blank lines.
+
+for i
+do
+  if test -f "$i" -a -w "$i"
+  then
+    mv "$i" "$i".bak
+    deblank -o "$i" "$i".bak
+  fi
+done
