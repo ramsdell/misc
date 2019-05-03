@@ -4,7 +4,11 @@
 
   Author: John D Ramsdell
 
-  Copyright (C) 2019 The MITRE Corporation
+  Copyright (C) John D Ramsdell
+
+  This program is free software: you can redistribute it and/or
+  modify it under the terms of the BSD License as published by the
+  University of California.
 */
 
 #include <stddef.h>
