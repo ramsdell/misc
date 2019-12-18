@@ -1,0 +1,15 @@
+*.c	filter=deblank
+*.h	filter=deblank
+*.go	filter=deblank
+*.rs	filter=deblank
+*.hs	filter=deblank
+*.cabal	filter=deblank
+*.ml	filter=deblank
+*.mli	filter=deblank
+*.mll	filter=deblank
+*.mly	filter=deblank
+*.tex	filter=deblank
+*.mp	filter=deblank
+*.xhtml	filter=deblank
+*.scm	filter=deblank
+*.lsp	filter=deblank
