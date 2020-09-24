@@ -1,0 +1,100 @@
+<project name="dutmv" default="all" basedir=".">
+
+<!-- Set the property "opt" to "on" if you want to optimize code. -->
+<!-- Change this property on the command line. -->
+<property name="opt" value="on"/>
+
+<!-- directory names -->
+<property name="src" value="src"/>
+<property name="lib" value="lib"/>
+<property name="build" value="build"/>
+<property name="dist" value="dist"/>
+<property name="api" value="api"/>
+
+<property name="version" value="1.5"/>
+<property name="proj" value="${ant.project.name}"/>
+<property name="pkgs" value="org.mitre.*"/>
+<property name="props" value="${src}/org/mitre/treemap/version.properties"/>
+
+<target name="init">
+<!-- Create the build directory structure used by compile -->
+<mkdir dir="${build}"/>
+<uptodate property="version_added" srcfile="build.xml" targetfile="${props}"/>
+</target>
+
+<target name="compile" depends="init">
+<!-- Compile the java code from ${src} into ${build} -->
+<javac srcdir="${src}" destdir="${build}"
+       deprecation="on" debug="on" optimize="${opt}">
+  <classpath>
+    <pathelement path="${build}"/>
+    <fileset dir="${lib}">
+      <include name="*.jar"/>
+    </fileset>
+  </classpath>
+</javac>
+</target>
+
+<target name="version" depends="init" unless="version_added">
+<propertyfile file="${props}">
+   <entry key="version" value="${version}" operation="="/>
+   <entry key="program" value="DUTMV" operation="="/>
+</propertyfile>
+</target>
+
+<target name="resource" depends="init,version">
+<!-- Copy resources from ${src} into ${build} -->
+<copy todir="${build}">
+  <fileset dir="${src}">
+    <include name="**/*.properties"/>
+  </fileset>
+</copy>
+<!-- Copy the license into ${build} -->
+<copy todir="${build}" file="license.txt"/>
+</target>
+
+<target name="all" depends="compile,version,resource">
+<jar jarfile="${proj}.jar" manifest="${lib}/${proj}.mf" basedir="${build}"/>
+</target>
+
+<target name="run" depends="all">
+  <java jar="${proj}.jar" fork="true"/>
+</target>
+
+<target name="doc">
+<mkdir dir="${api}"/>
+<javadoc sourcepath="${src}" packagenames="${pkgs}" destdir="${api}">
+  <classpath>
+    <pathelement path="${build}"/>
+    <fileset dir="${lib}">
+      <include name="*.jar"/>
+    </fileset>
+  </classpath>
+</javadoc>
+</target>
+
+<target name="dist" depends="all,doc">
+<mkdir dir="${dist}/${proj}-${version}"/>
+<copy todir="${dist}/${proj}-${version}">
+  <fileset dir=".">
+    <exclude name="${build}/"/>
+    <exclude name="${dist}/"/>
+    <exclude name="*.zip"/>
+  </fileset>
+</copy>
+<zip zipfile="${proj}-${version}.zip" basedir="${dist}"/>
+</target>
+
+<target name="clean">
+<!-- Delete the ${build} directory, the project jar file, -->
+<!-- the source zip file, and the ${dist} and ${api} directories -->
+<delete dir="${build}"/>
+<delete>
+  <fileset dir=".">
+     <include name="*.jar"/>
+  </fileset>
+</delete>
+<delete dir="${dist}"/>
+<delete dir="${api}"/>
+</target>
+</project>
