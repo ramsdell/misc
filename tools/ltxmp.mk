@@ -26,7 +26,11 @@
 SHELL = /bin/sh
 
 ifndef BASE_NAME
-  BASE_NAME := root
+  BASE_NAME = root
+endif
+
+ifndef LATEX
+  LATEX = lualatex
 endif
 
 TEX_SRCS := $(wildcard *.tex)
@@ -41,31 +45,21 @@ MP_FIGS := $(filter-out $(MP_MACROS),$(MP_SRCS))
 all:	$(BASE_NAME).pdf
 
 $(BASE_NAME).pdf:	$(TEX_SRCS) $(MP_FIGS:.mp=-0.mps)
-	if test ! -f $(BASE_NAME).aux; then pdflatex $(BASE_NAME).tex; fi
+	if test ! -f $(BASE_NAME).aux; then $(LATEX) $(BASE_NAME).tex; fi
 	if test -f $(BASE_NAME).idx; then $(MAKE) $(BASE_NAME).ind; fi
-	pdflatex $(BASE_NAME).tex
+	$(LATEX) $(BASE_NAME).tex
 
 ifdef BIB_NAME
   $(BASE_NAME).pdf:	$(BASE_NAME).bbl
 endif
 
 $(BASE_NAME).bbl:	$(BIB_NAME).bib
-	if test ! -f $(BASE_NAME).aux; then pdflatex $(BASE_NAME).tex; fi
+	if test ! -f $(BASE_NAME).aux; then $(LATEX) $(BASE_NAME).tex; fi
 	bibtex $(BASE_NAME)
-	pdflatex $(BASE_NAME).tex
+	$(LATEX) $(BASE_NAME).tex
 
 $(BASE_NAME).ind:	$(BASE_NAME).idx
 	makeindex $(BASE_NAME)
-
-$(BASE_NAME).ps:	$(BASE_NAME).dvi
-	dvips -o $(BASE_NAME).ps -t letter $(BASE_NAME).dvi
-
-$(BASE_NAME).dvi:	$(BASE_NAME).pdf
-	latex $(BASE_NAME).tex
-
-dvi:	$(BASE_NAME).dvi
-
-ps:	$(BASE_NAME).ps
 
 CLEAN_FILES := $(BASE_NAME).pdf \
 	$(wildcard *.log *.aux *.toc *.lof *.out) \

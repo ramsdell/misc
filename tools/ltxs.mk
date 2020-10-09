@@ -1,13 +1,9 @@
 TEX_SRCS := $(wildcard *.tex)
+LATEX = lualatex
 
 %.pdf:	%.tex
-	pdflatex $*
-	pdflatex $*
-
-%.ps:	%.tex
-	latex $*
-	latex $*
-	dvips -o $@ $*
+	$(LATEX) $*
+	$(LATEX) $*
 
 all:	$(TEX_SRCS:.tex=.pdf)
 
