@@ -1,0 +1,13 @@
+#! /bin/sh
+# Extract the content in pre elements from an XHTML document.
+
+amp='s/\&amp;/\&/g'
+lt='s/\&lt;/</g'
+gt='s/\&gt;/>/g'
+quot='s/\&quot;/"/g'
+apos='s/\&apos;/'\''/g'
+
+awk '
+"</pre>" == $1 { emitting = 0 }
+{ if (emitting) print }
+"<pre>" == $1 { emitting = 1 }' "$@" | sed "$amp;$lt;$gt;$quot;$apos"
