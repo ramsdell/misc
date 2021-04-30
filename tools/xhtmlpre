@@ -1,5 +1,5 @@
 #! /bin/sh
-# Extract the content in pre elements from an XHTML document.
+# Extract the content of pre elements in an XHTML document.
 
 amp='s/\&amp;/\&/g'
 lt='s/\&lt;/</g'
