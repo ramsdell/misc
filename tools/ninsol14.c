@@ -100,6 +100,8 @@
   15. day insolation
   16. length of day
 
+  USAGE
+
   $ ninsol14 -h
   Compute orbital positions and insolation
   using Berger's 1978 algorithm
@@ -110,6 +112,56 @@
     -t      -- output tab separated values and suppress prompts
     -v      -- print version number
     -h      -- print this message
+
+  EXAMPLE
+
+  Compute the average insolation at various latitudes over last 1000
+  years.
+
+  $ cat ave
+  #! /bin/sh
+
+  awk 'BEGIN {
+    phi = '$1'
+    t = '$2'.0
+    t = (t - 1950.0) / 1000.0
+    for (i = 15; i < 360; i = i + 30) {
+      printf("%d %f 1 19 47 78 %d\n", phi, t, i)
+    }
+  }' | ninsol14 -t | awk '{
+    i = i + $12
+    n = n + 1.0
+  }
+  END {
+    printf("%d\t%d\t%f\n", '$1', '$2', i / n)
+  }'
+  $ cat insol
+  #! /bin/sh
+
+  # Compute tab separated values with:
+  # ./insol | /bin/sh > insol.tsv
+
+  awk 'BEGIN {
+    printf("echo '\''Latitude\tYear\tInsolation'\''\n")
+    for (phi = -90; phi <= 90; phi = phi + 30) {
+      for (t = 21; t <= 2021; t = t + 100) {
+        print "./ave", phi, t
+      }
+    }
+  }'
+  $ ./insol | /bin/sh > insol.tsv
+  $ head insol.tsv
+  Latitude	Year	Insolation
+  -90	21	181.621037
+  -90	121	181.570595
+  -90	221	181.515425
+  -90	321	181.455533
+  -90	421	181.390930
+  -90	521	181.321632
+  -90	621	181.247658
+  -90	721	181.169032
+  -90	821	181.085784
+
 */
 
 /*
