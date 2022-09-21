@@ -1,0 +1,79 @@
+;; Emacs -*- mode: scheme -*- or mode: csound-sco
+
+;; Scheme Score Preprocessor Examples
+
+;; Some ordinary Csound statements that pass through Scheme Score
+;; unchanged follow.
+t 0 70.0
+a 0 0 35.0
+f 0 0 1 "file.ext" 0 0 0
+
+i20    0.50  -0.50  7.03 84.0 pp4 np5	; D#2 ch02
+i20    1.00  -0.50  7.07		;  G2 ch02
+
+;; The i-statements above can be written as Scheme expressions.
+
+(i 20 0.50 -0.50 7.03 84.0 'pp4 'np5)	; D#2 ch02
+(i 20 1.00 -0.50 7.07)			;  G2 ch02
+
+;; To evaluate a Scheme expression in an i-statement, use the comma
+;; syntax.
+
+i10 2 3 4 ,(+ 2 3) 6 7
+
+;; Associate a value with a variable by using define.
+
+(define two 2)
+
+;; Now you can reference the variable two in an i-statement.
+
+i10 ,two 3 4 ,(+ two 3) 6 7
+
+;; End of lines within lists do not terminate a statement.
+
+i10 ,two 3 4 ,(+
+	       two
+	       3) 6 7
+
+;; You can define your own statement.
+
+(define (x a b c d)
+  (do ((b b (+ b 1)))
+      ((>= b c))
+    (i a b d 84.0)))
+
+i99 2 30 81
+x99 3 10 <
+i99 10 2 2
+
+;; You can redefine the Scheme function associated with a standard
+;; statement.
+
+(define (my-i a b)
+  (display "i 30 2 ")
+  (write a)
+  (display " 22 44 ")
+  (write b)
+  (newline))
+
+(define old-i i)
+
+(set! i my-i)
+
+i 6 9
+
+;; Reinstall the old definition of i.
+
+(set! i old-i)
+
+i 6 9
+
+;; Be sure to read the Scheme file generated from this example to see
+;; how each Scheme Score statement is translated.
+
+;; You can generate the Scheme file without any definitions for the
+;; standard score statements and supply your own.  The standard Scheme
+;; Score prolog is excluded out by supplying the "-x" flag to scmscore.
+
+;; end of score
+e
